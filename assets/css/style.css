@@ -7,10 +7,17 @@
 :root {
   color-scheme: dark;
 
-  /* Home: neutral charcoal, a blank board to start from */
-  --bg: #141414;
-  --accent: #cdc7b9;
-  --accent-rgb: 205, 199, 185;
+  /* Home: dark red in the top-left, dark green in the bottom-right, and a band of
+     midnight blue held in between (30% to 65%). Links and titles use a
+     brighter version of that blue. */
+  --red: #2a1216;
+  --blue: #161a3c;
+  --green: #0f2b1a;
+  --bg: var(--blue);
+  --bg-grad: linear-gradient(155deg, var(--red) 0%, var(--blue) 30%, var(--blue) 65%, var(--green) 100%);
+  --accent: #7d8cff;
+  --accent-rgb: 125, 140, 255;
+  --tint-rgb: 112, 120, 230;
 
   --fg: #e4e1da;
   --muted: #9a968e;
@@ -25,22 +32,28 @@
 /* Research: blue-black ink, for chalkboards and proofs */
 [data-section="research"] {
   --bg: #131925;
-  --accent: #a3b8dc;
-  --accent-rgb: 163, 184, 220;
+  --bg-grad: none;
+  --accent: #8fb8ff;
+  --accent-rgb: 143, 184, 255;
+  --tint-rgb: 163, 184, 220;
 }
 
 /* Exploring: dark moss, for wandering off the path */
 [data-section="exploring"] {
   --bg: #151d17;
-  --accent: #a9c69b;
-  --accent-rgb: 169, 198, 155;
+  --bg-grad: none;
+  --accent: #a6e08c;
+  --accent-rgb: 166, 224, 140;
+  --tint-rgb: 169, 198, 155;
 }
 
 /* About: warm oxblood, like a jazz club or a ballroom at night */
 [data-section="about"] {
   --bg: #221718;
-  --accent: #dba592;
-  --accent-rgb: 219, 165, 146;
+  --bg-grad: none;
+  --accent: #ffab8c;
+  --accent-rgb: 255, 171, 140;
+  --tint-rgb: 219, 165, 146;
 }
 
 /* ------------------------------------------------------------------
@@ -52,12 +65,14 @@
 }
 
 html {
-  background: var(--bg);
+  min-height: 100%;
+  background-color: var(--bg);
+  background-image: var(--bg-grad);
 }
 
 body {
   margin: 0;
-  background: var(--bg);
+  background: transparent;   /* let the html gradient show through */
   color: var(--fg);
   font: 1.25rem/1.6 var(--serif);  /* Alegreya runs small; 1.25rem reads like ~18px elsewhere */
   -webkit-font-smoothing: antialiased;
@@ -71,8 +86,10 @@ body {
 
 a {
   color: var(--accent);
+  font-weight: 500;
+  text-decoration-color: rgba(var(--accent-rgb), 0.45);
   text-decoration-thickness: 1px;
-  text-underline-offset: 0.18em;
+  text-underline-offset: 0.2em;
 }
 
 a:hover {
@@ -80,14 +97,14 @@ a:hover {
 }
 
 h1, h2, h3 {
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.25;
   margin: 2.2em 0 0.6em;
 }
 
-h1 { font-size: 1.6rem; margin-top: 0; }
-h2 { font-size: 1.25rem; }
-h3 { font-size: 1.05rem; }
+h1 { font-size: 2.6rem; margin-top: 0; }
+h2 { font-size: 1.9rem; }
+h3 { font-size: 1.45rem; }
 
 p { margin: 0 0 1em; }
 
@@ -97,11 +114,6 @@ hr {
   border: 0;
   border-top: 1px solid var(--rule);
   margin: 2.5rem 0;
-}
-
-code, kbd {
-  font-family: var(--mono);
-  font-size: 0.88em;
 }
 
 /* ------------------------------------------------------------------
@@ -115,16 +127,15 @@ code, kbd {
 }
 
 .site-title {
-  margin: 0 0 0.3rem;
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  letter-spacing: 0.08em;
+  margin: 0 0 0.2rem;
+  font-style: italic;
   color: var(--muted);
 }
 
 .name {
   margin: 0;
-  font-size: 2rem;
+  font-size: 2.75rem;
+  line-height: 1.1;
 }
 
 .card {
@@ -132,14 +143,15 @@ code, kbd {
   padding: clamp(1.25rem, 5vw, 2.5rem);
   border-radius: var(--radius);
   background:
-    linear-gradient(180deg, rgba(var(--accent-rgb), 0.08), rgba(var(--accent-rgb), 0.04)),
+    linear-gradient(180deg, rgba(var(--tint-rgb), 0.08), rgba(var(--tint-rgb), 0.04)),
     rgba(255, 255, 255, 0.01);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
 
 .card > h2:first-child {
   margin: 0 0 0.6rem;
-  font-size: 1.5rem;
+  font-size: 1.9rem;
+  line-height: 1.2;
   color: var(--accent);
 }
 
@@ -189,8 +201,8 @@ code, kbd {
 }
 
 .plain-list .date {
-  font-family: var(--mono);
-  font-size: 0.8rem;
+  font-variant-numeric: lining-nums tabular-nums;
+  font-size: 0.95rem;
   color: var(--muted);
   margin-right: 0.8em;
 }
@@ -202,6 +214,7 @@ code, kbd {
 /* The game renders HTML into #nashhack (see /assets/js/nashhack.js). */
 .nh {
   padding: 1rem;
+  font-variant-numeric: lining-nums;   /* Alegreya's old-style digits wobble in stats */
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 10px;
   background: rgba(0, 0, 0, 0.3);
@@ -252,6 +265,8 @@ code, kbd {
 
 .nh-bar > span { display: block; height: 100%; background: var(--accent); }
 
+/* The map is the one exception to "no typewriter font": a grid of
+   characters only lines up in a monospaced face. */
 .nh-map {
   margin: 0;
   overflow-x: auto;
@@ -267,7 +282,7 @@ code, kbd {
 .nh-p   { color: var(--accent); font-weight: 700; }
 .nh-s   { color: #ffff78; font-weight: 700; }
 .nh-i   { color: #ffb86b; font-weight: 700; }
-.nh-m   { font-weight: 700; font-family: var(--mono); }
+.nh-m   { font-weight: 700; }
 .nh-is-r { color: #b8c8be; }
 .nh-is-g { color: #7ef04a; }
 .nh-is-m { color: #aaaaff; }
@@ -314,8 +329,9 @@ code, kbd {
   padding: 0.6rem 0.9rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
-  font-family: var(--mono);
-  font-size: 1.1rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: lining-nums tabular-nums;
   text-align: center;
 }
 .nh-matrix td.nh-pos  { color: #7ef04a; }
@@ -324,7 +340,7 @@ code, kbd {
 
 .nh-card { padding: 1.5rem 0; text-align: center; }
 .nh-card p { margin: 0.5rem 0 1rem; }
-.nh-big { font-family: var(--mono); font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+.nh-big { font-size: 2.2rem; font-weight: 700; line-height: 1.2; color: var(--accent); }
 
 /* Rules page (/nashhack/) */
 .rules table {
@@ -345,15 +361,8 @@ code, kbd {
 .rules li { margin-bottom: 0.35rem; }
 .rules details { margin-top: 1rem; }
 .rules summary { cursor: pointer; color: var(--accent); }
-.rules .pos { color: #7ef04a; font-family: var(--mono); }
-.rules .neg { color: #ff6b6b; font-family: var(--mono); }
-
-.game-caption {
-  margin: 0 0 1rem;
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  color: var(--muted);
-}
+.rules .pos { color: #7ef04a; font-weight: 700; }
+.rules .neg { color: #ff6b6b; font-weight: 700; }
 
 /* ------------------------------------------------------------------
    Footer
@@ -361,7 +370,6 @@ code, kbd {
 
 .site-footer {
   margin-top: 4rem;
-  font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: 0.95rem;
   color: var(--muted);
 }
