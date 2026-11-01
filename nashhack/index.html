@@ -28,7 +28,7 @@
     <main class="rules">
         <section class="card">
         <h2>The run</h2>
-        <p>You lead a partner (<span class="nh-pt">f</span>) through five stages. Clear them all and defeat The Ackermann to win.</p>
+        <p>You and your partner go through six stages: three dungeons and three dance heats. Defeat The Ackermann to reach the Final, then finish as high as you can. 1st place makes you champions.</p>
         <table>
             <tr><th>#</th><th>Stage</th><th>Type</th><th>What's there</th></tr>
             <tr><td>1</td><td>The Crypt</td><td>Dungeon</td><td>4 monsters, 2×2 fights</td></tr>
@@ -36,22 +36,34 @@
             <tr><td>3</td><td>The Catacombs</td><td>Dungeon</td><td>6 monsters, 3×3 fights</td></tr>
             <tr><td>4</td><td>Semifinal</td><td>Quickstep heat</td><td>46 bars, cutoff 85; adds showboats and bulldozers</td></tr>
             <tr><td>5</td><td>The Vault</td><td>Dungeon</td><td>5 monsters, 3×3 fights, The Ackermann</td></tr>
+            <tr><td>6</td><td>Final</td><td>Viennese Waltz</td><td>24 bars, no cutoff: you're ranked 1st to 6th</td></tr>
         </table>
         <p>The run ends if any of these happens:</p>
         <ul>
             <li>your HP reaches 0;</li>
             <li>your partner's Composure reaches 0 (they leave, and you can't dance alone);</li>
-            <li>you score below a heat's cutoff (you're not recalled).</li>
+            <li>you score below the Quarterfinal or Semifinal cutoff (you're not recalled).</li>
         </ul>
+        </section>
+
+        <section class="card">
+        <h2>Lead or follow</h2>
+        <p>At the start of every run you choose a role, the way you'd pick a species in DCSS. The leader is always the blue <span class="nh-lead">@</span> and the follower always the pink <span class="nh-follow">@</span>. Whichever one is you is underlined.</p>
+        <table>
+            <tr><th>Role</th><th>HP</th><th>In heats</th><th>In fights</th></tr>
+            <tr><td><span class="nh-lead">@</span> Lead</td><td>20</td><td>You choose every step. Hold prepares a turn; Muscle forces one.</td><td>Standard.</td></tr>
+            <tr><td><span class="nh-follow">@</span> Follow</td><td>16</td><td>Your partner leads; you read their cues and answer them. Back-lead takes over for a bar.</td><td><b>Read</b>: once per fight, see the monster's committed move before you choose.</td></tr>
+        </table>
+        <p>Everything else, from monsters and stages to Composure and Connection, works the same in both roles.</p>
         </section>
 
         <section class="card">
         <h2>Your stats</h2>
         <table>
             <tr><th>Stat</th><th>Start / max</th><th>Notes</th></tr>
-            <tr><td>HP</td><td>20 / 20</td><td>Does not refill between stages. Potions give +5.</td></tr>
-            <tr><td>Composure <span class="nh-heart">♥</span></td><td>4 / 4</td><td>Your partner's. Lost when anything hits them.</td></tr>
-            <tr><td>Connection <b>●</b></td><td>3 / 5</td><td>How well your lead is read. It carries over between stages.</td></tr>
+            <tr><td>HP</td><td>20 (Lead) or 16 (Follow)</td><td>Does not refill between stages. Potions give +5.</td></tr>
+            <tr><td>Composure <span class="nh-heart">♥</span></td><td>4 / 4</td><td>Your partner's patience with you. Lost when monsters reach your partner or the couple collides.</td></tr>
+            <tr><td>Connection <b>●</b></td><td>3 / 5</td><td>How well the two of you read each other. It carries over between stages.</td></tr>
         </table>
         </section>
 
@@ -60,8 +72,10 @@
         <table>
             <tr><th>Where</th><th>Keys</th><th>Buttons</th></tr>
             <tr><td>Dungeon</td><td>Arrows, WASD or hjkl to move</td><td>↑ ← ↓ →</td></tr>
-            <tr><td>Fight</td><td>1, 2, 3 pick a row · F flees</td><td>row buttons, Flee</td></tr>
-            <tr><td>Heat</td><td>Arrows / WASD lead · Space holds · M arms Muscle</td><td>↑ ← ↓ →, Hold, Muscle</td></tr>
+            <tr><td>Role choice</td><td>1 Lead · 2 Follow · Enter repeats your last role</td><td>the role cards</td></tr>
+            <tr><td>Fight</td><td>1, 2, 3 pick a row · F flees · R reads (Follow)</td><td>row buttons, Flee, Read</td></tr>
+            <tr><td>Heat (Lead)</td><td>Arrows / WASD lead · Space holds · M arms Muscle</td><td>↑ ← ↓ →, Hold, Muscle</td></tr>
+            <tr><td>Heat (Follow)</td><td>Arrows / WASD answer the lead · Space answers a hold · M arms Back-lead</td><td>↑ ← ↓ →, Hold, Back-lead</td></tr>
             <tr><td>Cards</td><td>Enter or Space</td><td>the card's button</td></tr>
         </table>
         <p class="muted">Click the game panel first so it receives your keys.</p>
@@ -75,7 +89,7 @@
             <li>Monsters within 7 steps chase you. Walking into one, or one walking into you, starts a fight.</li>
             <li>If a monster walks into <b>your partner</b>, it costs 1 Composure and the monster is dazed for 2 turns.</li>
             <li>Each floor has 1 potion <span class="nh-i">!</span>, and each kill has a 25% chance to drop another.</li>
-            <li>Take the stairs <span class="nh-s">&gt;</span> to go on. The Vault has no stairs: The Ackermann waits at its far end.</li>
+            <li>Take the stairs <span class="nh-s">&gt;</span> to go on. The Vault has no stairs: The Ackermann waits at its far end, and defeating it takes you to the Final.</li>
         </ul>
         </section>
 
@@ -129,14 +143,15 @@
         </section>
 
         <section class="card">
-        <h2>Heats: leading on the dance floor</h2>
+        <h2>Heats: the dance floor</h2>
         <p>The floor is a ring around a roped-off centre. Every couple travels <b>counterclockwise</b> (the line of dance): left along the top, down the left side, right along the bottom, up the right side. The arrows drawn on the rope show the way.</p>
         <ul>
-            <li><b>Your couple</b> takes two tiles: you <span class="nh-p">@</span> and your partner <span class="nh-pt">f</span>. As in Standard, your partner is <b>in front</b>, moving backwards, and can't see where they're going.</li>
-            <li><b>One bar per turn.</b> Each arrow press leads your couple one tile in that direction; your partner ends up one tile further on. Every other couple then moves.</li>
-            <li><b>Reverse:</b> leading the opposite way spins you in place, so you and your partner swap tiles.</li>
+            <li><b>Your couple</b> takes two tiles: the leader <span class="nh-lead">@</span> and the follower <span class="nh-follow">@</span>. As in Standard, the follower is <b>in front</b>, moving backwards, and can't see where they're going.</li>
+            <li><b>One bar per turn.</b> Each bar the couple steps one tile in the chosen direction, and the follower ends up one tile further on. Every other couple then moves.</li>
+            <li><b>Reverse:</b> stepping the opposite way spins the couple in place, so leader and follower swap tiles.</li>
             <li><b>Goal:</b> one full lap before the music runs out. The heat ends as soon as you complete the lap.</li>
         </ul>
+        <h3>Playing Lead</h3>
         <table>
             <tr><th>Lead</th><th>What happens</th></tr>
             <tr><td>Straight on</td><td>Always read correctly.</td></tr>
@@ -144,13 +159,25 @@
             <tr><td>A turn after <b>Hold</b></td><td>Hold spends a bar standing still. The next lead is prepared and can't be misread.</td></tr>
             <tr><td>A turn with <b>Muscle</b> armed</td><td>Never misread, but costs 1 Connection. Muscle is only used up on a turn.</td></tr>
         </table>
+        <h3>Playing Follow</h3>
+        <p>Your partner (the computer) leads, and each bar you see their lead above the floor.</p>
+        <table>
+            <tr><th>Situation</th><th>What happens</th></tr>
+            <tr><td>Clear lead</td><td>One arrow (or "hold"). The chance of a clear lead is 50% + 10% × Connection.</td></tr>
+            <tr><td>Unclear lead</td><td>Two options are shown, and one of them is the real lead. Use the floor to work out which.</td></tr>
+            <tr><td>You answer the lead</td><td>The couple steps as led. Answer a hold with Space.</td></tr>
+            <tr><td>You answer something else</td><td>Misfollow: the couple steps your way. Floorcraft −1.</td></tr>
+            <tr><td>Your partner steers blind</td><td>12% of bars, your leader steers straight on without looking, even into a wall or another couple.</td></tr>
+            <tr><td><b>Back-lead</b> armed, then an arrow</td><td>The couple steps your way with no misfollow penalty, but Connection −1. It's only used up when your arrow differs from the lead.</td></tr>
+        </table>
+        <h3>Both roles</h3>
         <table>
             <tr><th>Event</th><th>Effect</th></tr>
-            <tr><td>Your partner's new tile is blocked (wall, rope, couple)</td><td>You don't move. Floorcraft −3, Composure −1, Connection −1.</td></tr>
-            <tr><td>Only your new tile is blocked</td><td>You don't move. Floorcraft −1.</td></tr>
+            <tr><td>The follower's new tile is blocked (wall, rope, couple)</td><td>The couple doesn't move. Floorcraft −3, Composure −1, Connection −1.</td></tr>
+            <tr><td>Only the leader's new tile is blocked</td><td>The couple doesn't move. Floorcraft −1.</td></tr>
             <tr><td>You end a lead facing against the line of dance</td><td>Floorcraft −1.</td></tr>
             <tr><td>A newcomer drifts into you, or a bulldozer barges in</td><td>Composure −1, Connection −1.</td></tr>
-            <tr><td>8 clean bars in a row (no collision, misread or Muscle)</td><td>Connection +1.</td></tr>
+            <tr><td>8 clean bars in a row (no collision, misread, misfollow, Muscle or Back-lead)</td><td>Connection +1.</td></tr>
         </table>
         <table>
             <tr><th>Couple</th><th>Behaviour</th></tr>
@@ -164,6 +191,20 @@
             <li>Below the cutoff, you aren't recalled and the run ends.</li>
             <li>Get through a heat with no partner collisions and you gain +1 Composure and +3 HP.</li>
         </ul>
+        </section>
+
+        <section class="card">
+        <h2>The Final: Viennese Waltz</h2>
+        <p>The fastest dance on the floor, and the hardest to keep safe. All the heat rules above still apply, with these changes:</p>
+        <table>
+            <tr><th>Rule</th><th>Final</th></tr>
+            <tr><td>Music</td><td>24 bars for one lap.</td></tr>
+            <tr><td>Your travel</td><td>A step straight on carries the couple <b>2 tiles</b> (each tile is checked for collisions, and you stop at the first one). Turns and sidesteps are still 1 tile.</td></tr>
+            <tr><td>Other couples</td><td>Five pros and two bulldozers move 2 tiles a bar; two showboats move 3 tiles, then pose for a bar. There are no newcomers.</td></tr>
+            <tr><td>Hold</td><td>Allowed, but stopping dead costs Floorcraft −2. In Follow, your leader never holds just to prepare a turn.</td></tr>
+            <tr><td>Result</td><td>No cutoff. Your score is ranked against five rival couples who score about 98, 94, 90, 86 and 81 (each up to 3 higher or lower). Ties go to you.</td></tr>
+        </table>
+        <p>1st place: <b>Champions</b>. 2nd or 3rd: <b>on the podium</b>. 4th to 6th: <b>finalists</b>. Your best placement is saved in your browser and shown on the title card.</p>
         </section>
     </main>
     </div>

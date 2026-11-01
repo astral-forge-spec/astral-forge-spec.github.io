@@ -11,7 +11,7 @@
 
     /* --- Tuning ---------------------------------------------------------- */
 
-    var MAX_HP = 20, POTION = 5;
+    var POTION = 5;
     var MAX_COMP = 4;                 // partner's Composure
     var MAX_CONN = 5, START_CONN = 3; // Connection
     var WHISPER_CONN = 4;             // partner names a monster's habit at this Connection
@@ -22,14 +22,31 @@
     var MISREAD_STEP = 0.10;          // misread chance = (5 - Connection) x 10% on unprepared turns
     var CLEAN_BARS = 8;               // clean bars in a row for +1 Connection
     var DROP_CHANCE = 0.25;            // potion drop on a kill
+    var CUE_BASE = 0.5, CUE_STEP = 0.1;    // follow mode: a lead cue is clear with chance 50% + 10% x Connection
+    var LEADER_SLIP = 0.12;           // follow mode: chance your leader steers straight on without looking
+
+    // Pick one at the start of a run, like a species in DCSS.
+    var ROLES = {
+        lead: { name: 'Lead', hp: 20,
+                blurb: 'You steer the couple. 20 HP. In heats you choose every step: Hold prepares a turn, Muscle forces one.' },
+        follow: { name: 'Follow', hp: 16,
+                  blurb: 'You read people. 16 HP. In heats your partner leads and you read their cues; Back-lead overrides them. ' +
+                         'Once per fight you can Read a monster’s move before choosing.' }
+    };
 
     var STAGES = [
         { type: 'dungeon', name: 'The Crypt', size: 2, mons: 4, pool: 'rgm', hpBonus: 0, cmax: 4 },
         { type: 'heat', name: 'Quarterfinal', dance: 'Waltz', bars: 48, cutoff: 80, couples: 'PPPNNN' },
         { type: 'dungeon', name: 'The Catacombs', size: 3, mons: 6, pool: 'rgmbpw', hpBonus: 1, cmax: 4 },
         { type: 'heat', name: 'Semifinal', dance: 'Quickstep', bars: 46, cutoff: 85, couples: 'PPNNNSSBB' },
-        { type: 'dungeon', name: 'The Vault', size: 3, mons: 5, pool: 'gmbpwk', hpBonus: 2, cmax: 5, boss: true }
+        { type: 'dungeon', name: 'The Vault', size: 3, mons: 5, pool: 'gmbpwk', hpBonus: 2, cmax: 5, boss: true },
+        { type: 'heat', name: 'Final', dance: 'Viennese Waltz', bars: 24, final: true, fast: true, couples: 'PPPPPSSBB' }
     ];
+
+    // The Final has no cutoff: you are ranked against five rival couples whose
+    // scores are these, each moved up or down by up to 3.
+    var RIVALS = [98, 94, 90, 86, 81], RIVAL_SPREAD = 3;
+    var STOP_COST = 2;                // Final: holding (stopping dead) costs Floorcraft
 
     var ROWS = ['Strike', 'Feint', 'Guard'];
     var COLS = ['Lunge', 'Block', 'Wait'];
@@ -231,11 +248,15 @@
     function say(msg) { S.msg = msg; }
     function stage() { return STAGES[S.stage]; }
 
-    function newGame() {
-        S = { mode: 'map', stage: 0, hp: MAX_HP, comp: MAX_COMP, conn: START_CONN, kills: 0 };
+    function newGame(role) {
+        role = ROLES[role] ? role : 'lead';
+        store.set('role', role);
+        S = { mode: 'map', role: role, stage: 0, maxHp: ROLES[role].hp, hp: ROLES[role].hp,
+              comp: MAX_COMP, conn: START_CONN, kills: 0 };
         enterFloor();
         say('You and your partner enter the Crypt. Find the > to descend.');
     }
+    function follower() { return S.role === 'follow'; }
 
     function nextStage() {
         S.stage++;
@@ -351,7 +372,7 @@
         var it = at(S.items, nx, ny);
         if (it) {
             S.items.splice(S.items.indexOf(it), 1);
-            S.hp = Math.min(MAX_HP, S.hp + POTION);
+            S.hp = Math.min(S.maxHp, S.hp + POTION);
             say('You quaff a potion (+' + POTION + ' HP). It tastes like a fixed point.');
         }
         if (S.stairs && nx === S.stairs[0] && ny === S.stairs[1]) { nextStage(); return; }
@@ -447,7 +468,7 @@
                 store.set('codex', codex);
                 msg += ' Codex entry unlocked.';
             }
-            if (m.k === 'A') { S.mode = 'won'; say(msg); return; }
+            if (m.k === 'A') { nextStage(); return; }
             S.mode = 'map';
             msg += ' ' + The(m.k) + ' is defeated.';
             if (Math.random() < DROP_CHANCE && !at(S.items, m.x, m.y)) { S.items.push({ x: m.x, y: m.y }); msg += ' It drops a potion.'; }
@@ -457,6 +478,15 @@
             prepRound(m);
         }
         say(msg);
+    }
+
+    // Follow mode: feel the monster's committed move before you choose, once per fight.
+    function read() {
+        var m = S.foe;
+        if (!follower() || m.readUsed) return;
+        m.readUsed = true;
+        m.readRound = m.rounds;
+        say('You read it: it will ' + COLS[m.next].toLowerCase() + '.');
     }
 
     function fleeCost() { return FLEE_BASE + S.flees; }
@@ -479,10 +509,11 @@
     var HW = 27, HH = 11, RX0 = 5, RX1 = 21, RY0 = 4, RY1 = 6, CX = 13, CY = 5;
 
     var COUPLES = {
-        P: { name: 'Pros', note: 'one tile every bar; step aside when blocked' },
+        P: { name: 'Pros', note: 'one tile every bar; step aside when blocked', fast: 'two tiles every bar; step aside when blocked' },
         N: { name: 'Newcomers', note: 'sometimes stop, sometimes drift sideways, even into you' },
-        S: { name: 'Showboats', note: 'two tiles, then pose for a bar' },
-        B: { name: 'Bulldozers', note: 'never step aside, and barge into you if you are in the way' }
+        S: { name: 'Showboats', note: 'two tiles, then pose for a bar', fast: 'three tiles, then pose for a bar' },
+        B: { name: 'Bulldozers', note: 'never step aside, and barge into you if you are in the way',
+             fast: 'two tiles every bar; never step aside, and barge into you if you are in the way' }
     };
 
     function lod(x, y) {
@@ -520,6 +551,7 @@
         S.lap = 0;
         S.ang = angle(S.me.x, S.me.y);
         S.prepared = true;
+        S.leaderPrepared = true;
         S.muscle = false;
         S.clean = 0;
         S.partnerHits = 0;
@@ -536,7 +568,58 @@
             }
         });
         S.mode = 'heat';
-        say('The ' + st.dance + ' begins. Lead your partner counterclockwise around the floor.');
+        if (follower()) newCue();
+        say('The ' + st.dance + ' begins. ' + (follower() ? 'Follow your partner' : 'Lead your partner') + ' counterclockwise around the floor.');
+    }
+
+    function same(a, b) { return a === b || (!!a && !!b && a[0] === b[0] && a[1] === b[1]); }
+    function dot(a, b) { return a[0] * b[0] + a[1] * b[1]; }
+
+    // Can the couple step in direction d right now without hitting anything?
+    // On the Final's fast floor a straight step covers 2 tiles, so check both.
+    function stepsFor(d) { return stage().fast && same(d, S.me.d) ? 2 : 1; }
+    function freeStep(d) {
+        var me = S.me;
+        if (d[0] === -me.d[0] && d[1] === -me.d[1]) return false;
+        for (var i = 1; i <= stepsFor(d); i++) {
+            var nx = me.x + i * d[0], ny = me.y + i * d[1];
+            if (occupant(nx, ny, me) || occupant(nx + d[0], ny + d[1], me)) return false;
+        }
+        return true;
+    }
+
+    // Follow mode: what your (computer) leader decides to lead this bar.
+    // Mostly sensible floorcraft; sometimes they hold to prepare a turn, and
+    // sometimes they barrel straight on without looking.
+    function leaderChoice() {
+        var me = S.me;
+        if (Math.random() < LEADER_SLIP) return me.d;
+        var l = lod(me.x, me.y), l2 = lod(me.x + 2 * me.d[0], me.y + 2 * me.d[1]);
+        var cands = [l2, l, me.d, [me.d[1], -me.d[0]], [-me.d[1], me.d[0]]].filter(function (d) {
+            return dot(d, l) >= 0 || dot(d, l2) > 0;
+        });
+        for (var i = 0; i < cands.length; i++) {
+            if (!freeStep(cands[i])) continue;
+            if (!same(cands[i], me.d) && !S.leaderPrepared && !stage().fast && Math.random() < 0.4) { S.leaderPrepared = true; return null; }
+            S.leaderPrepared = false;
+            return cands[i];
+        }
+        return null;
+    }
+
+    // The cue you feel for the next lead: clear, or one of two possibilities.
+    function newCue() {
+        var dir = leaderChoice();
+        var clear = Math.random() < clamp(CUE_BASE + CUE_STEP * S.conn, 0, 1);
+        var cue = { dir: dir, options: [dir] };
+        if (!clear) {
+            var pool = DIRS.concat([null]).filter(function (d) {
+                return !same(d, dir) && !(d && d[0] === -S.me.d[0] && d[1] === -S.me.d[1]);
+            });
+            cue.options = [dir, pool[rnd(pool.length)]];
+            if (Math.random() < 0.5) cue.options.reverse();
+        }
+        S.cue = cue;
     }
 
     function partnerHit(msg) {
@@ -554,17 +637,33 @@
         return 'a ' + COUPLES[o.t].name + ' couple';
     }
 
-    // One bar. dir is [dx, dy] to lead a direction, or null to Hold.
-    function bar(dir) {
-        var me = S.me, msgs = [], clean = true, hitsBefore = S.partnerHits;
+    // One bar. input is [dx, dy] for an arrow, or null for Hold.
+    function bar(input) {
+        var me = S.me, msgs = [], clean = true, hitsBefore = S.partnerHits, actual;
 
-        if (!dir) {
-            S.prepared = true;
-            msgs.push('You hold for a bar. Your partner is ready for a turn.');
+        if (follower()) {
+            // You answer the lead. Matching it is clean; anything else moves the
+            // couple your way, either as a misfollow or a deliberate back-lead.
+            var led = S.cue.dir;
+            if (same(input, led)) {
+                actual = led;
+            } else if (S.muscle && input) {
+                S.muscle = false;
+                S.conn = Math.max(0, S.conn - 1);
+                clean = false;
+                actual = input;
+                msgs.push('You back-lead your partner. Connection −1.');
+            } else {
+                S.fc -= 1;
+                clean = false;
+                actual = input;
+                msgs.push('Misfollow: the lead was ' + dirName(led) + '. Floorcraft −1.');
+            }
+        } else if (!input) {
+            actual = null;
         } else {
-            var straight = dir[0] === me.d[0] && dir[1] === me.d[1];
-            var actual = dir;
-            if (!straight) {
+            actual = input;
+            if (!same(input, me.d)) {
                 if (S.muscle) {
                     S.muscle = false;
                     S.conn = Math.max(0, S.conn - 1);
@@ -576,29 +675,43 @@
                     msgs.push('Misread! Your partner kept going straight.');
                 }
             }
-            S.prepared = false;
+        }
 
+        if (!actual) {
+            S.prepared = true;
+            if (stage().fast) {
+                S.fc -= STOP_COST;
+                msgs.push('You stop dead in a Viennese Waltz. Floorcraft −' + STOP_COST + '.');
+            } else if (!follower()) {
+                msgs.push('You hold for a bar. Your partner is ready for a turn.');
+            }
+        } else {
+            S.prepared = false;
             if (actual[0] === -me.d[0] && actual[1] === -me.d[1]) {
                 // Reverse: the couple spins in place, swapping places.
                 me.x += me.d[0]; me.y += me.d[1];
                 me.d = [-me.d[0], -me.d[1]];
             } else {
-                var nx = me.x + actual[0], ny = me.y + actual[1];
-                var fx = nx + actual[0], fy = ny + actual[1];
-                var hitF = occupant(fx, fy, me), hitL = occupant(nx, ny, me);
-                if (hitF) {
-                    clean = false;
-                    S.fc -= 3;
-                    msgs.push(partnerHit('Your partner backs into ' + whatName(hitF) + '! Floorcraft −3, Composure −1, Connection −1.'));
-                } else if (hitL) {
-                    clean = false;
-                    S.fc -= 1;
-                    msgs.push('You bump into ' + whatName(hitL) + '. Floorcraft −1.');
-                } else {
+                for (var k = stepsFor(actual); k > 0; k--) {
+                    var nx = me.x + actual[0], ny = me.y + actual[1];
+                    var fx = nx + actual[0], fy = ny + actual[1];
+                    var hitF = occupant(fx, fy, me), hitL = occupant(nx, ny, me);
+                    if (hitF) {
+                        clean = false;
+                        S.fc -= 3;
+                        msgs.push(partnerHit((follower() ? 'You back into ' : 'Your partner backs into ') + whatName(hitF) +
+                            '! Floorcraft −3, Composure −1, Connection −1.'));
+                        break;
+                    } else if (hitL) {
+                        clean = false;
+                        S.fc -= 1;
+                        msgs.push((follower() ? 'Your partner bumps into ' : 'You bump into ') + whatName(hitL) + '. Floorcraft −1.');
+                        break;
+                    }
                     me.x = nx; me.y = ny; me.d = actual;
                 }
             }
-            // Facing against the line of dance after any lead costs Floorcraft.
+            // Facing against the line of dance after any step costs Floorcraft.
             var l = lod(me.x, me.y);
             if (me.d[0] * l[0] + me.d[1] * l[1] < 0) {
                 S.fc -= 1;
@@ -623,7 +736,9 @@
                 if (r < 0.25) return;
                 if (r < 0.45) { drift(c, msgs); return; }
             }
-            if (c.t === 'S') { c.phase = (c.phase + 1) % 2; if (c.phase === 0) return; steps = 2; }
+            var fast = stage().fast;
+            if (fast && (c.t === 'P' || c.t === 'B')) steps = 2;
+            if (c.t === 'S') { c.phase = (c.phase + 1) % 2; if (c.phase === 0) return; steps = fast ? 3 : 2; }
             for (var s = 0; s < steps; s++) {
                 var d = lod(c.x, c.y);
                 var nx = c.x + d[0], ny = c.y + d[1], fx = nx + d[0], fy = ny + d[1];
@@ -649,8 +764,11 @@
         }
 
         if (S.lap >= 1 || S.bar >= stage().bars) endHeat(msgs);
-        else say(msgs.join(' '));
+        else { if (follower()) newCue(); say(msgs.join(' ')); }
     }
+
+    var ARROWS = { '1,0': '→', '-1,0': '←', '0,1': '↓', '0,-1': '↑' };
+    function dirName(d) { return d ? ARROWS[d[0] + ',' + d[1]] : 'hold'; }
 
     // A newcomer's drift doesn't look where it goes: it can bump your couple.
     function drift(c, msgs) {
@@ -685,12 +803,20 @@
     function endHeat(msgs) {
         var st = stage(), sc = heatScore();
         S.score = sc;
+        if (st.final) {
+            S.rivals = RIVALS.map(function (v) { return clamp(v + rnd(2 * RIVAL_SPREAD + 1) - RIVAL_SPREAD, 0, 100); });
+            S.place = 1 + S.rivals.filter(function (v) { return v > sc.total; }).length;   // ties go to you
+            if (S.place < store.get('best', 99)) store.set('best', S.place);
+            S.mode = 'won';
+            say(msgs.join(' '));
+            return;
+        }
         if (sc.total < st.cutoff) {
             lose('You were not recalled after the ' + st.name + ': ' + sc.total + ' points, cutoff ' + st.cutoff + '.');
             return;
         }
         S.bonus = S.partnerHits === 0;
-        if (S.bonus) { S.comp = Math.min(MAX_COMP, S.comp + 1); S.hp = Math.min(MAX_HP, S.hp + 3); }
+        if (S.bonus) { S.comp = Math.min(MAX_COMP, S.comp + 1); S.hp = Math.min(S.maxHp, S.hp + 3); }
         S.mode = 'heatResult';
         say(msgs.join(' '));
     }
@@ -701,8 +827,8 @@
         module.exports = {
             solve: solve, makeMatrix: makeMatrix, KINDS: KINDS, STAGES: STAGES, eff: eff, prepRound: prepRound,
             state: function () { return S; }, setState: function (s) { S = s; },
-            newGame: newGame, move: move, play: play, flee: flee, startHeat: startHeat, bar: bar,
-            nextStage: nextStage, lod: lod, heatScore: heatScore, occupant: occupant, tiles: tiles,
+            newGame: newGame, move: move, play: play, flee: flee, read: read, startHeat: startHeat, bar: bar, freeStep: freeStep, same: same,
+            nextStage: nextStage, lod: lod, RIVALS: RIVALS, heatScore: heatScore, occupant: occupant, tiles: tiles,
             dims: { HW: HW, HH: HH, RX0: RX0, RX1: RX1, RY0: RY0, RY1: RY1 }
         };
         return;
@@ -716,11 +842,16 @@
     function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
     function pips(n, max, on, off) { var s = ''; for (var i = 0; i < max; i++) s += i < n ? on : off; return s; }
 
+    // The leader is always the blue @ and the follower the pink @; underlined is you.
+    function youHTML() { return '<span class="nh-' + S.role + ' nh-you">@</span>'; }
+    function partnerHTML() { return '<span class="nh-' + (follower() ? 'lead' : 'follow') + '">@</span>'; }
+
     function statusHTML() {
         var st = stage();
         var h = '<div class="nh-status">';
-        h += '<span>HP <b>' + Math.max(0, S.hp) + '/' + MAX_HP + '</b><span class="nh-bar"><span style="width:' +
-            (100 * clamp(S.hp, 0, MAX_HP) / MAX_HP) + '%"></span></span></span>';
+        h += '<span>' + youHTML() + ' <b>' + ROLES[S.role].name + '</b></span>';
+        h += '<span>HP <b>' + Math.max(0, S.hp) + '/' + S.maxHp + '</b><span class="nh-bar"><span style="width:' +
+            (100 * clamp(S.hp, 0, S.maxHp) / S.maxHp) + '%"></span></span></span>';
         h += '<span title="Your partner\'s Composure">Composure <b class="nh-heart">' + pips(S.comp, MAX_COMP, '♥', '♡') + '</b></span>';
         h += '<span title="Connection">Connection <b>' + pips(S.conn, MAX_CONN, '●', '○') + '</b></span>';
         h += '<span>' + (S.stage + 1) + '/' + STAGES.length + ' · <b>' + st.name + (st.dance ? ' (' + st.dance + ')' : '') + '</b></span>';
@@ -728,8 +859,8 @@
     }
 
     function dungeonCell(x, y) {
-        if (x === S.px && y === S.py) return '<span class="nh-p">@</span>';
-        if (x === S.fx && y === S.fy) return '<span class="nh-pt">f</span>';
+        if (x === S.px && y === S.py) return youHTML();
+        if (x === S.fx && y === S.fy) return partnerHTML();
         if (!S.seen[y][x]) return ' ';
         var vis = visible(x, y), m = vis && at(S.mons, x, y);
         if (m) return '<span class="nh-m nh-is-' + m.k + '">' + m.k + '</span>';
@@ -756,7 +887,7 @@
             rows.push(row);
         }
         return '<pre class="nh-map" aria-label="Dungeon map">' + rows.join('\n') + '</pre>' +
-            '<div class="nh-help"><span class="nh-p">@</span> you · <span class="nh-pt">f</span> your partner · ' +
+            '<div class="nh-help">' + youHTML() + ' you · ' + partnerHTML() + ' your partner · ' +
             '<span class="nh-s">&gt;</span> stairs · <span class="nh-i">!</span> potion · letters are monsters. ' +
             'Move with arrows or WASD; walk into a monster to fight. Keep monsters off your partner.</div>' + pad();
     }
@@ -769,9 +900,11 @@
         else if (whispers()) h += '<div class="nh-hint">Your partner whispers: “' + kind.hint + '”</div>';
         else h += '<div class="nh-hint">You don’t know its habits yet. Watch the history.</div>';
         if (m.k === 'b') h += '<div class="nh-announce">It announces: “I will ' + COLS[m.ann].toLowerCase() + ".”</div>";
+        var readNow = m.readUsed && m.readRound === m.rounds;
+        if (readNow) h += '<div class="nh-announce nh-read">You read it: it will ' + COLS[m.next].toLowerCase() + '.</div>';
 
         h += '<table class="nh-matrix"><tr><th></th>';
-        for (var c = 0; c < n; c++) h += '<th>' + COLS[c] + '</th>';
+        for (var c = 0; c < n; c++) h += '<th' + (readNow && c === m.next ? ' class="nh-read"' : '') + '>' + COLS[c] + '</th>';
         h += '</tr>';
         for (var r = 0; r < n; r++) {
             h += '<tr><th><button type="button" data-act="row" data-r="' + r + '">' + (r + 1) + ' · ' + ROWS[r] + '</button></th>';
@@ -791,14 +924,16 @@
                 return ROWS[p[0]][0] + '/' + COLS[p[1]][0];
             }).join(' ') + '</div>';
         }
-        h += '<div class="nh-pad"><button type="button" data-act="flee">F · Flee (−' + fleeCost() + ' HP)</button></div>';
+        h += '<div class="nh-pad">' +
+            (follower() && !m.readUsed ? '<button type="button" data-act="read">R · Read (once per fight)</button>' : '') +
+            '<button type="button" data-act="flee">F · Flee (−' + fleeCost() + ' HP)</button></div>';
         return h;
     }
 
     function heatCell(x, y) {
         var me = S.me, t = tiles(me);
-        if (x === t[0][0] && y === t[0][1]) return '<span class="nh-p">@</span>';
-        if (x === t[1][0] && y === t[1][1]) return '<span class="nh-pt">f</span>';
+        if (x === t[0][0] && y === t[0][1]) return follower() ? partnerHTML() : youHTML();
+        if (x === t[1][0] && y === t[1][1]) return follower() ? youHTML() : partnerHTML();
         for (var i = 0; i < S.couples.length; i++) {
             var c = S.couples[i], ct = tiles(c);
             if (x === ct[0][0] && y === ct[0][1]) return '<span class="nh-c nh-c-' + c.t + '">' + c.t + '</span>';
@@ -828,17 +963,23 @@
             '<span>Bar <b>' + S.bar + '/' + st.bars + '</b></span>' +
             '<span>Lap <b>' + Math.round(100 * clamp(S.lap, 0, 1)) + '%</b></span>' +
             '<span>Floorcraft <b>' + Math.max(0, S.fc) + '</b></span>' +
-            '<span>Score <b>' + sc.total + '</b> / cutoff ' + st.cutoff + '</span>' +
-            '<span>' + (S.prepared ? '<b>Prepared</b>' : 'Not prepared') + '</span>' +
-            (S.muscle ? '<span><b class="nh-neg-t">Muscle armed</b></span>' : '') + '</div>';
+            '<span>Score <b>' + sc.total + '</b>' + (st.final ? ' (Final)' : ' / cutoff ' + st.cutoff) + '</span>' +
+            (follower() ? '' : '<span>' + (S.prepared ? '<b>Prepared</b>' : 'Not prepared') + '</span>') +
+            (S.muscle ? '<span><b class="nh-neg-t">' + (follower() ? 'Back-lead' : 'Muscle') + ' armed</b></span>' : '') + '</div>';
+        if (follower()) {
+            var o = S.cue.options;
+            h += '<div class="nh-cue">Your partner leads: ' + (o.length === 1
+                ? '<b>' + dirName(o[0]) + '</b>'
+                : '<b>' + dirName(o[0]) + '</b> or <b>' + dirName(o[1]) + '</b>? <span class="nh-small">(unclear lead)</span>') + '</div>';
+        }
         h += '<pre class="nh-map" aria-label="Dance floor">' + rows.join('\n') + '</pre>';
-        h += '<div class="nh-help"><span class="nh-p">@</span><span class="nh-pt">f</span> you and your partner (they’re in front, backing up blind) · ' +
+        h += '<div class="nh-help"><span class="nh-lead">@</span> leader · <span class="nh-follow">@</span> follower (in front, backing up blind) · underlined is you · ' +
             'arrows on the rope show the line of dance · ' +
             Object.keys(COUPLES).filter(function (k) { return st.couples.indexOf(k) >= 0; }).map(function (k) {
                 return '<span class="nh-c nh-c-' + k + '">' + k + k.toLowerCase() + '</span> ' + COUPLES[k].name.toLowerCase();
             }).join(' · ') + '</div>';
         h += pad('<button type="button" data-act="hold">Space · Hold</button>' +
-            '<button type="button" data-act="muscle"' + (S.muscle ? ' class="nh-on"' : '') + '>M · Muscle</button>');
+            '<button type="button" data-act="muscle"' + (S.muscle ? ' class="nh-on"' : '') + '>M · ' + (follower() ? 'Back-lead' : 'Muscle') + '</button>');
         return h;
     }
 
@@ -848,18 +989,33 @@
             '<div class="nh-help">or press Enter · <a href="/nashhack/">full rules</a></div></div>';
     }
 
+    function ordinal(n) { return n + (n === 1 ? 'st' : n === 2 ? 'nd' : n === 3 ? 'rd' : 'th'); }
+
     function heatIntroHTML() {
         var st = stage();
         var couples = Object.keys(COUPLES).filter(function (k) { return st.couples.indexOf(k) >= 0; }).map(function (k) {
-            return '<li><span class="nh-c nh-c-' + k + '">' + k + k.toLowerCase() + '</span> ' + COUPLES[k].name + ': ' + COUPLES[k].note + '</li>';
+            return '<li><span class="nh-c nh-c-' + k + '">' + k + k.toLowerCase() + '</span> ' + COUPLES[k].name + ': ' +
+                (st.fast && COUPLES[k].fast ? COUPLES[k].fast : COUPLES[k].note) + '</li>';
         }).join('');
-        return cardHTML(st.name + ' · ' + st.dance,
-            '<p>Lead your partner one lap counterclockwise in ' + st.bars + ' bars. Score ' + st.cutoff + ' or more to be recalled.</p>' +
-            '<ul class="nh-list">' +
-            '<li>Arrows / WASD lead a direction. Your partner is in front of you, backing up, and can’t see.</li>' +
-            '<li>Turning without preparation can be misread (' + Math.round((MAX_CONN - S.conn) * MISREAD_STEP * 100) + '% at your Connection). ' +
-            '<b>Hold</b> (Space) prepares the next turn. <b>Muscle</b> (M) forces it, at −1 Connection.</li>' +
-            '<li>Your partner backing into anything: Floorcraft −3, Composure −1, Connection −1.</li>' +
+        var how = follower()
+            ? '<li>Each bar your partner leads a direction (or a hold). Answer with the same arrow (or Space for a hold).</li>' +
+              '<li>Some leads are unclear and show two options (' + Math.round(100 * (1 - clamp(CUE_BASE + CUE_STEP * S.conn, 0, 1))) +
+              '% at your Connection). Answering wrong is a misfollow: the couple goes your way, Floorcraft −1.</li>' +
+              '<li>Your partner sometimes steers straight on without looking. <b>Back-lead</b> (M, then an arrow) takes over for a bar, at −1 Connection.</li>' +
+              '<li>You are in front, backing up blind. Backing into anything: Floorcraft −3, Composure −1, Connection −1.</li>'
+            : '<li>Arrows / WASD lead a direction. Your partner is in front of you, backing up, and can’t see.</li>' +
+              '<li>Turning without preparation can be misread (' + Math.round((MAX_CONN - S.conn) * MISREAD_STEP * 100) + '% at your Connection). ' +
+              '<b>Hold</b> (Space) prepares the next turn. <b>Muscle</b> (M) forces it, at −1 Connection.</li>' +
+              '<li>Your partner backing into anything: Floorcraft −3, Composure −1, Connection −1.</li>';
+        var goal = st.final
+            ? '<p>The Ackermann is halted; one dance left. ' + (follower() ? 'Follow' : 'Lead') + ' one lap in ' + st.bars +
+              ' bars. No cutoff: you are ranked against five rival couples (about ' + RIVALS.join(', ') + ').</p>' +
+              '<ul class="nh-list"><li><b>Viennese Waltz:</b> a straight step carries you <b>2 tiles</b>; turns are 1. ' +
+              'The other finalists are just as fast (below).</li>' +
+              '<li>Stopping dead (Hold) costs Floorcraft −' + STOP_COST + '.</li></ul>'
+            : '<p>' + (follower() ? 'Follow' : 'Lead') + ' your partner one lap counterclockwise in ' + st.bars + ' bars. Score ' + st.cutoff + ' or more to be recalled.</p>';
+        return cardHTML(st.name + ' · ' + st.dance, goal +
+            '<ul class="nh-list">' + how +
             '<li>Score = 60 × lap + Floorcraft (from 20) + 4 × Connection.</li>' +
             couples + '</ul>', 'Start the ' + st.dance);
     }
@@ -868,15 +1024,29 @@
         var hadFocus = root.contains(document.activeElement);
         var h = '';
         if (S.mode === 'title') {
-            var n = Object.keys(codex).length;
-            h += cardHTML('NashHack', '<p>Three dungeons, two dance heats, one partner to lead and protect. Payoff matrices instead of dice.</p>' +
-                (n ? '<p class="nh-small">Codex: ' + n + '/' + Object.keys(KINDS).length + ' monster habits learned.</p>' : ''), 'Start');
+            var n = Object.keys(codex).length, last = store.get('role', 'lead');
+            h += '<div class="nh-card"><div class="nh-big">NashHack</div>' +
+                '<p>Three dungeons, three dance heats, one partner. Payoff matrices instead of dice; a Final instead of a boss screen.</p>' +
+                '<p><b>Choose your role.</b></p><div class="nh-roles">' +
+                Object.keys(ROLES).map(function (k, i) {
+                    return '<button type="button" class="nh-role" data-act="role" data-role="' + k + '">' +
+                        '<span class="nh-role-name"><span class="nh-' + k + '">@</span> ' + (i + 1) + ' · ' + ROLES[k].name + '</span>' +
+                        '<span class="nh-role-blurb">' + ROLES[k].blurb + '</span></button>';
+                }).join('') + '</div>' +
+                '<div class="nh-help">Press 1 or 2 (Enter repeats ' + ROLES[last].name + ') · <a href="/nashhack/">full rules</a>' +
+                (n ? ' · Codex: ' + n + '/' + Object.keys(KINDS).length + ' monster habits learned' : '') +
+                (store.get('best', 99) < 99 ? ' · Best Final: ' + ordinal(store.get('best', 99)) : '') + '</div></div>';
         } else if (S.mode === 'dead') {
             h += cardHTML('You diverged', '<p>' + esc(S.reason) + '</p><p class="nh-small">Reached stage ' + (S.stage + 1) + '/' + STAGES.length +
-                ' · ' + S.kills + ' kills. Monster habits you learned stay in your codex.</p>', 'Try again');
+                ' · ' + S.kills + ' kills. Monster habits you learned stay in your codex.</p>', 'Choose a role');
         } else if (S.mode === 'won') {
-            h += cardHTML('Halted', '<p>The Ackermann has been reduced to a base case. You and your partner win with ' + S.hp +
-                ' HP and ' + S.kills + ' kills.</p>', 'Play again');
+            var sc2 = S.score, title = S.place === 1 ? 'Champions!' : S.place <= 3 ? 'On the podium' : 'Finalists';
+            var board = S.rivals.concat([sc2.total]).sort(function (a, b) { return b - a; });
+            h += cardHTML(title, '<p>You and your partner placed <b>' + ordinal(S.place) + ' of 6</b> in the Final.</p>' +
+                '<p>Progress ' + sc2.prog + ' + Floorcraft ' + sc2.fc + ' + Connection ' + sc2.conn + ' = <b>' + sc2.total + '</b>. ' +
+                'Rival couples scored ' + S.rivals.slice().sort(function (a, b) { return b - a; }).join(', ') + '.</p>' +
+                '<p class="nh-small">' + (S.place === 1 ? 'Nobody did it better. ' : 'Ties go to you; ' + board[0] + ' took first. ') +
+                S.kills + ' kills on the way.</p>', 'Choose a role');
         } else if (S.mode === 'heatIntro') {
             h += statusHTML() + heatIntroHTML();
         } else if (S.mode === 'heatResult') {
@@ -897,7 +1067,8 @@
     }
 
     function advance() {
-        if (S.mode === 'title' || S.mode === 'dead' || S.mode === 'won') newGame();
+        if (S.mode === 'title') newGame(store.get('role', 'lead'));
+        else if (S.mode === 'dead' || S.mode === 'won') S = { mode: 'title' };
         else if (S.mode === 'heatIntro') startHeat();
         else if (S.mode === 'heatResult') nextStage();
     }
@@ -915,6 +1086,8 @@
         else if (act === 'dir') direction(+b.getAttribute('data-dx'), +b.getAttribute('data-dy'));
         else if (act === 'row' && S.mode === 'fight') play(+b.getAttribute('data-r'));
         else if (act === 'flee' && S.mode === 'fight') flee();
+        else if (act === 'read' && S.mode === 'fight') read();
+        else if (act === 'role' && S.mode === 'title') newGame(b.getAttribute('data-role'));
         else if (act === 'hold' && S.mode === 'heat') bar(null);
         else if (act === 'muscle' && S.mode === 'heat') S.muscle = !S.muscle;
         render();
@@ -927,6 +1100,8 @@
         if ((S.mode === 'map' || S.mode === 'heat') && KEYS[k]) direction(KEYS[k][0], KEYS[k][1]);
         else if (S.mode === 'fight' && (k === '1' || k === '2' || k === '3')) play(+k - 1);
         else if (S.mode === 'fight' && k === 'f') flee();
+        else if (S.mode === 'fight' && k === 'r') read();
+        else if (S.mode === 'title' && (k === '1' || k === '2')) newGame(k === '1' ? 'lead' : 'follow');
         else if (S.mode === 'heat' && (k === ' ' || k === '.')) bar(null);
         else if (S.mode === 'heat' && k === 'm') S.muscle = !S.muscle;
         else if (!playing && (k === 'Enter' || k === ' ')) advance();

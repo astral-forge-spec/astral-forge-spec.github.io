@@ -279,7 +279,6 @@ hr {
 .nh-w   { color: #6b6b6b; }
 .nh-f   { color: #3e3e3e; }
 .nh-dim { opacity: 0.45; }
-.nh-p   { color: var(--accent); font-weight: 700; }
 .nh-s   { color: #ffff78; font-weight: 700; }
 .nh-i   { color: #ffb86b; font-weight: 700; }
 .nh-m   { font-weight: 700; }
@@ -291,7 +290,9 @@ hr {
 .nh-is-w { color: #c792ea; }
 .nh-is-k { color: #e6eef6; }
 .nh-is-A { color: #ff6b6b; }
-.nh-pt   { color: #f2a7c3; font-weight: 700; }   /* your partner */
+.nh-lead   { color: #8ea0ff; font-weight: 700; }   /* the leader is always the blue @ */
+.nh-follow { color: #f2a7c3; font-weight: 700; }   /* the follower is always the pink @ */
+.nh-you    { text-decoration: underline; text-underline-offset: 0.15em; }
 
 /* Ballroom heats */
 .nh-rope { color: #5a5a5a; }
@@ -305,6 +306,27 @@ hr {
 .nh .nh-on { background: rgba(255, 107, 107, 0.18); border-color: #ff6b6b; color: #ff9b9b; }
 .nh-announce { margin: -0.4rem 0 0.9rem; font-size: 0.95rem; color: #f0a35e; }
 .nh-small { font-size: 0.85rem; color: var(--muted); }
+.nh-cue { margin-bottom: 0.6rem; font-size: 1.05rem; }
+.nh-cue b { color: #8ea0ff; font-size: 1.2rem; }
+.nh-read, .nh-matrix th.nh-read { color: #f2a7c3; }
+
+/* Role choice on the title card */
+.nh-roles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.75rem;
+  margin: 0 0 0.8rem;
+  text-align: left;
+}
+.nh .nh-role {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.8rem 1rem;
+  text-align: left;
+}
+.nh-role-name { font-size: 1.15rem; color: var(--fg); }
+.nh-role-blurb { font-size: 0.88rem; font-weight: 400; line-height: 1.45; color: var(--muted); }
 .nh-list {
   max-width: 34rem;
   margin: 0 auto 1rem;
