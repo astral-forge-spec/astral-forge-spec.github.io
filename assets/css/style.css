@@ -13,11 +13,11 @@
   --red: #2a1216;
   --blue: #161a3c;
   --green: #0f2b1a;
-  --bg: var(--blue);
-  --bg-grad: linear-gradient(155deg, var(--red) 0%, var(--blue) 30%, var(--blue) 65%, var(--green) 100%);
-  --accent: #7d8cff;
-  --accent-rgb: 125, 140, 255;
-  --tint-rgb: 112, 120, 230;
+  --bg: var(--green);
+  --bg-grad: linear-gradient(155deg, var(--red) 0%, var(--green) 40%, var(--green) 55%, var(--blue) 100%);
+  --accent: #7dff8c;
+  --accent-rgb: 125, 255, 140;
+  --tint-rgb: 112, 230, 120;
 
   --fg: #e4e1da;
   --muted: #9a968e;
@@ -157,6 +157,79 @@ hr {
 
 .card > :last-child {
   margin-bottom: 0;
+}
+
+/* ------------------------------------------------------------------
+   Entries: a stack of small bordered panels inside a card
+   (projects, papers, talks). Each .one-entry has an <h1> title,
+   a <p> blurb, and optionally a .more link at the end.
+   ------------------------------------------------------------------ */
+
+.entry-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;   /* the only spacing between entries; .one-entry has no margin */
+  margin: 30px 0;
+}
+
+.one-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.one-entry > h1 {
+  font-weight: 700;
+  font-size: 16pt;
+  /* 75% text color, 25% page accent: tinted, but quieter than a link */
+  color: color-mix(in srgb, var(--fg) 75%, var(--accent));
+}
+
+.one-entry > p {
+  font-size: 14pt;
+}
+
+.one-entry > :last-child {
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------
+   "Read more" links: <a class="more" href="...">Read more</a>
+   A small triangle before the text; both use the page's accent color.
+   ------------------------------------------------------------------ */
+
+a.more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+a.more::before {
+  content: "";
+  flex: none;
+  width: 0;
+  height: 0;
+  border-block: 0.32em solid transparent;
+  border-left: 0.5em solid currentColor;
+  transition: transform 0.15s ease;
+}
+
+a.more:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--accent-rgb), 0.45);
+}
+
+a.more:hover::before {
+  transform: translateX(0.15em);
 }
 
 /* ------------------------------------------------------------------
