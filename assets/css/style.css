@@ -541,14 +541,13 @@ a.more:hover::before {
 
 .post-date {
   margin-top: 0.5rem;
+  font-size: 14pt;   /* same size as the dates in the post lists (.one-entry > p) */
 }
 
-.post-abstract {
-  padding-bottom: 1.25rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 1px solid var(--rule);
-  font-style: italic;
-  color: var(--muted);
+/* The post's description, under the title and date, outside the card.
+   Plain body text, like the blurbs on /exploring/ and /exploring/blog/. */
+.post-summary {
+  margin: 1rem 0 0;
 }
 
 .post h2 { font-size: 1.6rem; margin: 1.8em 0 0.5em; }
