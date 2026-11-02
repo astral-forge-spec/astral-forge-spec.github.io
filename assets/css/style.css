@@ -198,6 +198,63 @@ hr {
   margin: 0;
 }
 
+/* Small gray date line: <p class="entry-date">Summer 2025</p>, right after the <h1> */
+.entry-date {
+  margin: 0;
+  font-size: 0.85rem;
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+.one-entry > h1 + .entry-date {
+  margin-top: -0.85rem;   /* sit snug under the title instead of a full gap away */
+}
+
+/* ------------------------------------------------------------------
+   Experiences: one role per block (teaching, jobs, service).
+   Lighter than .one-entry: no box, just an accent rule on the left.
+
+   <div class="experience">
+     <div class="experience-head">
+       <h3 class="experience-role">Grader</h3>
+       <span class="entry-date">Fall 2026</span>
+     </div>
+     <p class="experience-where">21-127 Concepts of Mathematics</p>
+     <p class="experience-note">Optional one-line description.</p>
+   </div>
+   ------------------------------------------------------------------ */
+
+.experience {
+  padding: 0.1rem 0 0.1rem 1rem;
+  border-left: 2px solid rgba(var(--accent-rgb), 0.4);
+}
+
+.experience-head {
+  display: flex;
+  flex-wrap: wrap;               /* date drops below the role on narrow screens */
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0 1rem;
+}
+
+.experience-role {
+  margin: 0;
+  font-size: 1.2rem;
+  color: color-mix(in srgb, var(--fg) 75%, var(--accent));
+}
+
+.experience-where {
+  margin: 0.15rem 0 0;
+  font-size: 1.05rem;
+}
+
+.experience-note {
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
 /* ------------------------------------------------------------------
    "Read more" links: <a class="more" href="...">Read more</a>
    A small triangle before the text; both use the page's accent color.
@@ -458,6 +515,120 @@ a.more:hover::before {
 .rules summary { cursor: pointer; color: var(--accent); }
 .rules .pos { color: #7ef04a; font-weight: 700; }
 .rules .neg { color: #ff6b6b; font-weight: 700; }
+
+/* ------------------------------------------------------------------
+   Blog (Jekyll: _layouts/post.html, _includes/post-entry.html)
+   ------------------------------------------------------------------ */
+
+/* Post titles in a list are links, but keep the tinted title look */
+.one-entry > h1 > a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.one-entry > h1 > a:hover {
+  color: var(--accent);
+}
+
+.site-title > a {
+  color: inherit;
+  font-weight: inherit;
+}
+
+.site-title > a:hover {
+  color: var(--accent);
+}
+
+.post-date {
+  margin-top: 0.5rem;
+}
+
+.post-abstract {
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--rule);
+  font-style: italic;
+  color: var(--muted);
+}
+
+.post h2 { font-size: 1.6rem; margin: 1.8em 0 0.5em; }
+.post h3 { font-size: 1.3rem; margin: 1.6em 0 0.4em; }
+.post h2:first-child,
+.post h3:first-child { margin-top: 0; }
+
+.post h2, .post h3 {
+  color: color-mix(in srgb, var(--fg) 75%, var(--accent));
+}
+
+.post ul, .post ol {
+  margin: 0 0 1em;
+  padding-left: 1.4em;
+}
+
+.post li { margin-bottom: 0.3em; }
+
+.post blockquote {
+  margin: 0 0 1em;
+  padding: 0.1em 0 0.1em 1em;
+  border-left: 2px solid rgba(var(--accent-rgb), 0.4);
+  color: var(--muted);
+}
+
+.post img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.5em auto;
+  border-radius: 8px;
+}
+
+/* The code font is the other exception to "no typewriter font" */
+.post code {
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  font-family: var(--mono);
+  font-size: 0.85em;
+}
+
+.post pre {
+  margin: 0 0 1em;
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  line-height: 1.45;
+}
+
+.post pre code {
+  padding: 0;
+  background: none;
+  font-size: 0.8rem;
+}
+
+.post table {
+  display: block;          /* wide tables scroll on phones */
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 0 0 1em;
+  font-size: 0.95rem;
+}
+
+.post th, .post td {
+  padding: 0.4rem 0.9rem 0.4rem 0;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+}
+
+.post th { color: var(--muted); font-weight: 500; }
+
+/* Display math: scroll instead of overflowing on phones */
+.post .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25em 0;
+}
 
 /* ------------------------------------------------------------------
    Footer

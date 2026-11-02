@@ -1,0 +1,10 @@
+{%- comment -%}
+  One post as a .one-entry panel. Used by the Exploring card and the full
+  blog list. Pass the post in: {% include post-entry.html post=post %}
+{%- endcomment -%}
+<div class="one-entry">
+  <h1><a href="{{ include.post.url }}">{{ include.post.title }}</a></h1>
+  <p class="entry-date"><time datetime="{{ include.post.date | date_to_xmlschema }}">{{ include.post.date | date: "%B %-d, %Y" }}</time></p>
+  <p>{{ include.post.description | default: include.post.excerpt | strip_html | truncatewords: 50 }}</p>
+  <a class="more" href="{{ include.post.url }}">Read more</a>
+</div>

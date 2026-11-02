@@ -1,0 +1,26 @@
+---
+layout: default
+section: exploring
+title: Blog
+description: Ideas, notes and thoughts.
+---
+<header class="site-header">
+  <p class="site-title"><a href="/exploring/">Exploring</a></p>
+  <h1 class="name">Blog</h1>
+</header>
+
+<main>
+  <section class="card">
+    <h2>All posts</h2>
+    <p>Ideas, notes and thoughts.</p>
+    {%- if site.posts.size > 0 %}
+    <div class="entry-list">
+      {%- for post in site.posts %}
+      {% include post-entry.html post=post %}
+      {%- endfor %}
+    </div>
+    {%- else %}
+    <p class="muted">No posts yet.</p>
+    {%- endif %}
+  </section>
+</main>

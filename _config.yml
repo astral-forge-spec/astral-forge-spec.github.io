@@ -1,0 +1,27 @@
+# Jekyll config. GitHub Pages builds the site from this on every push.
+#
+# Only files that start with a front matter block (--- ... ---) are processed;
+# every other HTML page is copied as-is, so the hand-written pages are untouched.
+
+title: Mike Mo
+
+markdown: kramdown
+kramdown:
+  input: GFM              # GitHub-flavored Markdown: fenced code, tables, etc.
+  math_engine: mathjax    # turns $$...$$ into \( \) / \[ \]; KaTeX renders those
+  syntax_highlighter_opts:
+    disable: true         # plain code blocks; no highlighter theme to maintain
+
+# A post at _posts/2026-11-01-my-post.md is served at /exploring/blog/my-post/
+permalink: /exploring/blog/:title/
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+
+exclude:
+  - README.md
+  - vendor/bundle/

@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en" data-section="home">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NashHack rules · Mike Mo</title>
+    <meta name="description" content="How to play NashHack: matrix-game fights, a partner to protect, and ballroom heats.">
+    <meta name="theme-color" content="#2a1216">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..700;1,400..700&display=swap">
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+    <div class="wrap">
+    <nav class="site-nav">
+        <a href="/">Home</a>
+        <a href="/research/">Research</a>
+        <a href="/exploring/">Exploring</a>
+        <a href="/about/">About</a>
+    </nav>
+
+    <header class="site-header">
+        <p class="site-title"><a href="/#nashhack-card">← back to the game</a></p>
+        <h1 class="name">NashHack rules</h1>
+    </header>
+
+    <main class="rules">
+        <section class="card">
+        <h2>The run</h2>
+        <p>You and your partner go through six stages: three dungeons and three dance heats. Defeat The Ackermann to reach the Final, then finish as high as you can. 1st place makes you champions.</p>
+        <table>
+            <tr><th>#</th><th>Stage</th><th>Type</th><th>What's there</th></tr>
+            <tr><td>1</td><td>The Crypt</td><td>Dungeon</td><td>4 monsters, 2×2 fights</td></tr>
+            <tr><td>2</td><td>Quarterfinal</td><td>Waltz heat</td><td>48 bars, cutoff 80; pros and newcomers</td></tr>
+            <tr><td>3</td><td>The Catacombs</td><td>Dungeon</td><td>6 monsters, 3×3 fights</td></tr>
+            <tr><td>4</td><td>Semifinal</td><td>Quickstep heat</td><td>46 bars, cutoff 85; adds showboats and bulldozers</td></tr>
+            <tr><td>5</td><td>The Vault</td><td>Dungeon</td><td>5 monsters, 3×3 fights, The Ackermann</td></tr>
+            <tr><td>6</td><td>Final</td><td>Viennese Waltz</td><td>24 bars, no cutoff: you're ranked 1st to 6th</td></tr>
+        </table>
+        <p>The run ends if any of these happens:</p>
+        <ul>
+            <li>your HP reaches 0;</li>
+            <li>your partner's Composure reaches 0 (they leave, and you can't dance alone);</li>
+            <li>you score below the Quarterfinal or Semifinal cutoff (you're not recalled).</li>
+        </ul>
+        </section>
+
+        <section class="card">
+        <h2>Lead or follow</h2>
+        <p>At the start of every run you choose a role, the way you'd pick a species in DCSS. The leader is always the blue <span class="nh-lead">@</span> and the follower always the pink <span class="nh-follow">@</span>. Whichever one is you is underlined.</p>
+        <table>
+            <tr><th>Role</th><th>HP</th><th>In heats</th><th>In fights</th></tr>
+            <tr><td><span class="nh-lead">@</span> Lead</td><td>20</td><td>You choose every step. Hold prepares a turn; Muscle forces one.</td><td>Standard.</td></tr>
+            <tr><td><span class="nh-follow">@</span> Follow</td><td>16</td><td>Your partner leads; you read their cues and answer them. Back-lead takes over for a bar.</td><td><b>Read</b>: once per fight, see the monster's committed move before you choose.</td></tr>
+        </table>
+        <p>Everything else, from monsters and stages to Composure and Connection, works the same in both roles.</p>
+        </section>
+
+        <section class="card">
+        <h2>Your stats</h2>
+        <table>
+            <tr><th>Stat</th><th>Start / max</th><th>Notes</th></tr>
+            <tr><td>HP</td><td>20 (Lead) or 16 (Follow)</td><td>Does not refill between stages. Potions give +5.</td></tr>
+            <tr><td>Composure <span class="nh-heart">♥</span></td><td>4 / 4</td><td>Your partner's patience with you. Lost when monsters reach your partner or the couple collides.</td></tr>
+            <tr><td>Connection <b>●</b></td><td>3 / 5</td><td>How well the two of you read each other. It carries over between stages.</td></tr>
+        </table>
+        </section>
+
+        <section class="card">
+        <h2>Controls</h2>
+        <table>
+            <tr><th>Where</th><th>Keys</th><th>Buttons</th></tr>
+            <tr><td>Dungeon</td><td>Arrows, WASD or hjkl to move</td><td>↑ ← ↓ →</td></tr>
+            <tr><td>Role choice</td><td>1 Lead · 2 Follow · Enter repeats your last role</td><td>the role cards</td></tr>
+            <tr><td>Fight</td><td>1, 2, 3 pick a row · F flees · R reads (Follow)</td><td>row buttons, Flee, Read</td></tr>
+            <tr><td>Heat (Lead)</td><td>Arrows / WASD lead · Space holds · M arms Muscle</td><td>↑ ← ↓ →, Hold, Muscle</td></tr>
+            <tr><td>Heat (Follow)</td><td>Arrows / WASD answer the lead · Space answers a hold · M arms Back-lead</td><td>↑ ← ↓ →, Hold, Back-lead</td></tr>
+            <tr><td>Cards</td><td>Enter or Space</td><td>the card's button</td></tr>
+        </table>
+        <p class="muted">Click the game panel first so it receives your keys.</p>
+        </section>
+
+        <section class="card">
+        <h2>Dungeons</h2>
+        <ul>
+            <li>You see about 5 tiles around you. Walls stay on the map once seen; monsters only show while they're in sight.</li>
+            <li>Your partner walks one tile behind you, stepping into the tile you just left. Walking into them swaps places.</li>
+            <li>Monsters within 7 steps chase you. Walking into one, or one walking into you, starts a fight.</li>
+            <li>If a monster walks into <b>your partner</b>, it costs 1 Composure and the monster is dazed for 2 turns.</li>
+            <li>Each floor has 1 potion <span class="nh-i">!</span>, and each kill has a 25% chance to drop another.</li>
+            <li>Take the stairs <span class="nh-s">&gt;</span> to go on. The Vault has no stairs: The Ackermann waits at its far end, and defeating it takes you to the Final.</li>
+        </ul>
+        </section>
+
+        <section class="card">
+        <h2>Fights</h2>
+        <p>Every fight is a zero-sum matrix game:</p>
+        <ul>
+            <li>The monster secretly commits to a column first, then you pick a row.</li>
+            <li>A <span class="pos">+n</span> cell means the monster loses n HP; a <span class="neg">−n</span> cell means you lose n HP. There are no zero cells.</li>
+            <li>Every column has at least one + cell, and every row at least one − cell, so no row is safe and no column is hopeless.</li>
+        </ul>
+        <table>
+            <tr><th>Rule</th><th>Detail</th></tr>
+            <tr><td>Size</td><td>2×2 in the Crypt (Strike / Feint vs Lunge / Block); 3×3 afterwards (adds Guard vs Wait).</td></tr>
+            <tr><td>Cell size</td><td>1 to 4 damage; 1 to 5 in the Vault.</td></tr>
+            <tr><td>Hidden habits</td><td>You aren't told how a monster chooses. The fight shows the history of moves so you can work it out.</td></tr>
+            <tr><td>Codex</td><td>Killing a kind of monster unlocks its habit for good. The codex is saved in your browser across runs.</td></tr>
+            <tr><td>Whispers</td><td>At Connection 4 or more, your partner tells you the habit of any monster, even one not in your codex.</td></tr>
+            <tr><td>Enrage</td><td>At round 8 and round 16 of a fight, every − cell gets 1 worse.</td></tr>
+            <tr><td>Fleeing</td><td>Costs 2 HP, then 3, then 4… on the same floor. The monster is dazed for 2 turns.</td></tr>
+        </table>
+        </section>
+
+        <section class="card">
+        <h2>Bestiary</h2>
+        <p>Monsters get tougher deeper in: +1 HP in the Catacombs, +2 in the Vault (not The Ackermann). Their habits are spoilers, so they're hidden below.</p>
+        <table>
+            <tr><th></th><th>Monster</th><th>HP</th><th>Found in</th></tr>
+            <tr><td><b class="nh-is-r">r</b></td><td>Uniform Rat</td><td>3</td><td>Crypt, Catacombs</td></tr>
+            <tr><td><b class="nh-is-g">g</b></td><td>Greedy Goblin</td><td>4</td><td>all</td></tr>
+            <tr><td><b class="nh-is-m">m</b></td><td>Mirror Mimic</td><td>4</td><td>all</td></tr>
+            <tr><td><b class="nh-is-b">b</b></td><td>Bluffing Bandit</td><td>5</td><td>Catacombs, Vault</td></tr>
+            <tr><td><b class="nh-is-p">p</b></td><td>Fictitious Phantom</td><td>5</td><td>Catacombs, Vault</td></tr>
+            <tr><td><b class="nh-is-w">w</b></td><td>Hedge Wraith</td><td>5</td><td>Catacombs, Vault</td></tr>
+            <tr><td><b class="nh-is-k">k</b></td><td>Nash Knight</td><td>6</td><td>Vault</td></tr>
+            <tr><td><b class="nh-is-A">A</b></td><td>The Ackermann</td><td>12</td><td>Vault (boss)</td></tr>
+        </table>
+        <details>
+            <summary>Show every habit (spoilers)</summary>
+            <ul>
+                <li><b>Uniform Rat:</b> picks a column uniformly at random.</li>
+                <li><b>Greedy Goblin:</b> always plays the column holding the single cell that is worst for you.</li>
+                <li><b>Mirror Mimic:</b> plays the column in the same position as the row you picked last round.</li>
+                <li><b>Bluffing Bandit:</b> plays uniformly at random, then announces a move. Honest bandits announce the true move 80% of the time, liars 20%. Each bandit is honest or a liar at random.</li>
+                <li><b>Fictitious Phantom:</b> best-responds to how often you've played each row in this fight.</li>
+                <li><b>Hedge Wraith:</b> multiplicative weights. Columns that would have hurt you more get played more often, so it's exploitable early and close to minimax later.</li>
+                <li><b>Nash Knight:</b> plays its minimax mixed strategy. Its game is tilted slightly your way, but only the right mix of rows collects that edge.</li>
+                <li><b>The Ackermann:</b> minimax like the Knight, and every 4 rounds its − cells grow by 1 (instead of enraging). End it quickly.</li>
+            </ul>
+        </details>
+        </section>
+
+        <section class="card">
+        <h2>Heats: the dance floor</h2>
+        <p>The floor is a ring around a roped-off centre. Every couple travels <b>counterclockwise</b> (the line of dance): left along the top, down the left side, right along the bottom, up the right side. The arrows drawn on the rope show the way.</p>
+        <ul>
+            <li><b>Your couple</b> takes two tiles: the leader <span class="nh-lead">@</span> and the follower <span class="nh-follow">@</span>. As in Standard, the follower is <b>in front</b>, moving backwards, and can't see where they're going.</li>
+            <li><b>One bar per turn.</b> Each bar the couple steps one tile in the chosen direction, and the follower ends up one tile further on. Every other couple then moves.</li>
+            <li><b>Reverse:</b> stepping the opposite way spins the couple in place, so leader and follower swap tiles.</li>
+            <li><b>Goal:</b> one full lap before the music runs out. The heat ends as soon as you complete the lap.</li>
+        </ul>
+        <h3>Playing Lead</h3>
+        <table>
+            <tr><th>Lead</th><th>What happens</th></tr>
+            <tr><td>Straight on</td><td>Always read correctly.</td></tr>
+            <tr><td>A turn, unprepared</td><td>Misread with chance (5 − Connection) × 10%. A misread means your partner keeps going straight.</td></tr>
+            <tr><td>A turn after <b>Hold</b></td><td>Hold spends a bar standing still. The next lead is prepared and can't be misread.</td></tr>
+            <tr><td>A turn with <b>Muscle</b> armed</td><td>Never misread, but costs 1 Connection. Muscle is only used up on a turn.</td></tr>
+        </table>
+        <h3>Playing Follow</h3>
+        <p>Your partner (the computer) leads, and each bar you see their lead above the floor.</p>
+        <table>
+            <tr><th>Situation</th><th>What happens</th></tr>
+            <tr><td>Clear lead</td><td>One arrow (or "hold"). The chance of a clear lead is 50% + 10% × Connection.</td></tr>
+            <tr><td>Unclear lead</td><td>Two options are shown, and one of them is the real lead. Use the floor to work out which.</td></tr>
+            <tr><td>You answer the lead</td><td>The couple steps as led. Answer a hold with Space.</td></tr>
+            <tr><td>You answer something else</td><td>Misfollow: the couple steps your way. Floorcraft −1.</td></tr>
+            <tr><td>Your partner steers blind</td><td>12% of bars, your leader steers straight on without looking, even into a wall or another couple.</td></tr>
+            <tr><td><b>Back-lead</b> armed, then an arrow</td><td>The couple steps your way with no misfollow penalty, but Connection −1. It's only used up when your arrow differs from the lead.</td></tr>
+        </table>
+        <h3>Both roles</h3>
+        <table>
+            <tr><th>Event</th><th>Effect</th></tr>
+            <tr><td>The follower's new tile is blocked (wall, rope, couple)</td><td>The couple doesn't move. Floorcraft −3, Composure −1, Connection −1.</td></tr>
+            <tr><td>Only the leader's new tile is blocked</td><td>The couple doesn't move. Floorcraft −1.</td></tr>
+            <tr><td>You end a lead facing against the line of dance</td><td>Floorcraft −1.</td></tr>
+            <tr><td>A newcomer drifts into you, or a bulldozer barges in</td><td>Composure −1, Connection −1.</td></tr>
+            <tr><td>8 clean bars in a row (no collision, misread, misfollow, Muscle or Back-lead)</td><td>Connection +1.</td></tr>
+        </table>
+        <table>
+            <tr><th>Couple</th><th>Behaviour</th></tr>
+            <tr><td><b class="nh-c-P">Pp</b> Pros</td><td>One tile every bar along the line of dance. They step aside when blocked.</td></tr>
+            <tr><td><b class="nh-c-N">Nn</b> Newcomers</td><td>Each bar: 25% stop, 20% drift sideways without looking (and can hit you), otherwise one tile forward.</td></tr>
+            <tr><td><b class="nh-c-S">Ss</b> Showboats</td><td>Alternate: two tiles in one bar, then pose for a bar.</td></tr>
+            <tr><td><b class="nh-c-B">Bb</b> Bulldozers</td><td>One tile every bar. They never step aside, and barge into you if you're in their way.</td></tr>
+        </table>
+        <p><b>Score</b> = 60 × lap fraction (up to 60) + Floorcraft (starts at 20, can't go below 0) + 4 × Connection.</p>
+        <ul>
+            <li>Below the cutoff, you aren't recalled and the run ends.</li>
+            <li>Get through a heat with no partner collisions and you gain +1 Composure and +3 HP.</li>
+        </ul>
+        </section>
+
+        <section class="card">
+        <h2>The Final: Viennese Waltz</h2>
+        <p>The fastest dance on the floor, and the hardest to keep safe. All the heat rules above still apply, with these changes:</p>
+        <table>
+            <tr><th>Rule</th><th>Final</th></tr>
+            <tr><td>Music</td><td>24 bars for one lap.</td></tr>
+            <tr><td>Your travel</td><td>A step straight on carries the couple <b>2 tiles</b> (each tile is checked for collisions, and you stop at the first one). Turns and sidesteps are still 1 tile.</td></tr>
+            <tr><td>Other couples</td><td>Five pros and two bulldozers move 2 tiles a bar; two showboats move 3 tiles, then pose for a bar. There are no newcomers.</td></tr>
+            <tr><td>Hold</td><td>Allowed, but stopping dead costs Floorcraft −2. In Follow, your leader never holds just to prepare a turn.</td></tr>
+            <tr><td>Result</td><td>No cutoff. Your score is ranked against five rival couples who score about 98, 94, 90, 86 and 81 (each up to 3 higher or lower). Ties go to you.</td></tr>
+        </table>
+        <p>1st place: <b>Champions</b>. 2nd or 3rd: <b>on the podium</b>. 4th to 6th: <b>finalists</b>. Your best placement is saved in your browser and shown on the title card.</p>
+        </section>
+    </main>
+    </div>
+</body>
+</html>

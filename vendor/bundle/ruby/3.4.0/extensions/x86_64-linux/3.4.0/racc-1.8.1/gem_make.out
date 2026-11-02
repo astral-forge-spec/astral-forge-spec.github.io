@@ -1,0 +1,18 @@
+current directory: /mnt/Data/Subdata/Academics/Study/Projects/astral-forge-spec.github.io/vendor/bundle/ruby/3.4.0/gems/racc-1.8.1/ext/racc/cparse
+/usr/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /mnt/Data/Subdata/Academics/Study/Projects/astral-forge-spec.github.io/vendor/bundle/ruby/3.4.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20261101-52987-j0ie5e sitelibdir\=./.gem.20261101-52987-j0ie5e clean
+
+current directory: /mnt/Data/Subdata/Academics/Study/Projects/astral-forge-spec.github.io/vendor/bundle/ruby/3.4.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20261101-52987-j0ie5e sitelibdir\=./.gem.20261101-52987-j0ie5e
+compiling cparse.c
+linking shared-object racc/cparse.so
+
+current directory: /mnt/Data/Subdata/Academics/Study/Projects/astral-forge-spec.github.io/vendor/bundle/ruby/3.4.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20261101-52987-j0ie5e sitelibdir\=./.gem.20261101-52987-j0ie5e install
+/usr/bin/install -c -m 0755 cparse.so ./.gem.20261101-52987-j0ie5e/racc
+
+current directory: /mnt/Data/Subdata/Academics/Study/Projects/astral-forge-spec.github.io/vendor/bundle/ruby/3.4.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20261101-52987-j0ie5e sitelibdir\=./.gem.20261101-52987-j0ie5e clean

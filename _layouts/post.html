@@ -1,0 +1,19 @@
+---
+layout: default
+---
+<header class="site-header">
+  <p class="site-title"><a href="/exploring/blog/">Blog</a></p>
+  <h1 class="name">{{ page.title }}</h1>
+  <p class="entry-date post-date"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time></p>
+</header>
+
+<main>
+  <article class="card post">
+    {%- if page.description %}
+    <p class="post-abstract">{{ page.description }}</p>
+    {%- endif %}
+    {{ content }}
+  </article>
+
+  <p><a class="more" href="/exploring/blog/">All posts</a></p>
+</main>

@@ -1,0 +1,45 @@
+<!doctype html>
+{%- assign section = page.section | default: "exploring" -%}
+{%- assign colors = "home:#2a1216,research:#131925,exploring:#151d17,about:#221718" | split: "," -%}
+<html lang="en" data-section="{{ section }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if page.title %}{{ page.title | strip_html }} · {% endif %}{{ site.title }}</title>
+  {%- if page.description %}
+  <meta name="description" content="{{ page.description | strip_html | escape }}">
+  {%- endif %}
+  {%- for pair in colors -%}
+    {%- assign kv = pair | split: ":" -%}
+    {%- if kv[0] == section %}
+  <meta name="theme-color" content="{{ kv[1] }}">
+    {%- endif -%}
+  {%- endfor %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..700;1,400..700&display=swap">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  {%- comment -%} Load KaTeX only on pages that actually contain math. {%- endcomment -%}
+  {%- if content contains '\(' or content contains '\[' %}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [
+      {left: '\\[', right: '\\]', display: true},
+      {left: '\\(', right: '\\)', display: false}
+    ], ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']});"></script>
+  {%- endif %}
+</head>
+<body>
+  <div class="wrap">
+    <nav class="site-nav">
+      <a href="/"{% if section == "home" %} aria-current="page"{% endif %}>Home</a>
+      <a href="/research/"{% if section == "research" %} aria-current="page"{% endif %}>Research</a>
+      <a href="/exploring/"{% if section == "exploring" %} aria-current="page"{% endif %}>Exploring</a>
+      <a href="/about/"{% if section == "about" %} aria-current="page"{% endif %}>About</a>
+    </nav>
+
+    {{ content }}
+  </div>
+</body>
+</html>

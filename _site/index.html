@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" data-section="home">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mike Mo</title>
+  <meta name="description" content="Mike Mo: theory, game theory, learning, and a roguelike called NashHack.">
+  <meta name="theme-color" content="#2a1216">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..700;1,400..700&display=swap">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <div class="wrap">
+    <nav class="site-nav">
+      <a href="/" aria-current="page">Home</a>
+      <a href="/research/">Research</a>
+      <a href="/exploring/">Exploring</a>
+      <a href="/about/">About</a>
+    </nav>
+
+    <header class="site-header">
+      <p class="site-title">Welcome to my personal site</p>
+      <h1 class="name">Mike Mo</h1>
+    </header>
+
+    <main>
+      <section class="card" id="hi">
+        <h2>Hi</h2>
+        <p>
+          I'm a sophomore at <a href="https://www.cmu.edu">Carnegie Mellon University</a> majoring in <a href="https://cs.cmu.edu/">Computer Science</a>. I love exploring the limits of what computations and agents can bring us, as well as building something occasionally to deepen my understanding. More on my
+          <a href="/research/">research</a>, what I'm
+          <a href="/exploring/">exploring</a>, and <a href="/about/">me</a>.
+        </p>
+        <div style="display: flex; gap: 40px;">
+          <div><a class="more" href="/attachments/Mike_Mo_CV.pdf">Curriculum Vitae</a></div>
+          <div><a class="more" href="https://www.github.com/astral-forge-spec/">GitHub</a></div>
+          <div><a class="more" href="mailto:mmo283.r+frommywebsite@gmail.com">Email</a></div>
+        </div>
+      </section>
+
+      <section class="card" id="nashhack-card">
+        <h2>NashHack</h2>
+        <p>A game-theoretic roguelike with a dance floor. Lead your partner, read your opponents. <a href="/nashhack/">Rules</a></p>
+        <div id="nashhack" class="nh" tabindex="0" aria-label="NashHack game"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/assets/js/nashhack.js" defer></script>
+</body>
+</html>
