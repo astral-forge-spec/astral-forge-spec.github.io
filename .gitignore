@@ -1,0 +1,9 @@
+# Installed gems and local Bundler settings
+/vendor/bundle/
+/.bundle/
+
+# Generated website and caches
+/_site/
+/.sass-cache/
+/.jekyll-cache/
+/.jekyll-metadata
